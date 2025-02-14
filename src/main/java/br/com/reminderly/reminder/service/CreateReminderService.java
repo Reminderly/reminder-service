@@ -11,7 +11,7 @@ import br.com.reminderly.reminder.mapper.ReminderMapper;
 
 @Service
 @RequiredArgsConstructor
-public class CreateRemindersService {
+public class CreateReminderService {
 
     private final ReminderRepository reminderRepository;
 

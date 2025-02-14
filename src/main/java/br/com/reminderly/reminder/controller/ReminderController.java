@@ -1,54 +1,57 @@
 package br.com.reminderly.reminder.controller;
 
 import br.com.reminderly.reminder.annotation.ValidUUID;
+import br.com.reminderly.reminder.dto.ReminderListResponse;
 import br.com.reminderly.reminder.dto.ReminderRequest;
 import br.com.reminderly.reminder.dto.ReminderResponse;
-import br.com.reminderly.reminder.service.CreateRemindersService;
+import br.com.reminderly.reminder.service.CreateReminderService;
 import br.com.reminderly.reminder.service.GetAllRemindersService;
 import br.com.reminderly.reminder.service.GetReminderService;
+import br.com.reminderly.reminder.service.UpdateReminderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URISyntaxException;
-
 @Validated
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1/reminder")
 public class ReminderController {
 
-    private final CreateRemindersService createRemindersService;
+    private final CreateReminderService createRemindersService;
     private final GetAllRemindersService getAllRemindersService;
     private final GetReminderService getReminderService;
+    private final UpdateReminderService updateReminderService;
 
-    @PostMapping("/v1/reminder")
-    public ResponseEntity<ReminderResponse> createReminder(@RequestBody ReminderRequest reminderRequest){
+    @PostMapping()
+    public ResponseEntity<ReminderResponse> createReminder(@RequestBody @Valid ReminderRequest reminderRequest){
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createRemindersService.execute(reminderRequest));
     }
 
-    @GetMapping("/v1/reminder")
-    public ResponseEntity<Object> getReminders(){
+    @GetMapping()
+    public ResponseEntity<ReminderListResponse> getReminders(){
 
         return ResponseEntity.status(HttpStatus.CREATED).body(getAllRemindersService.execute());
     }
 
-    @GetMapping("/v1/reminder/{id}")
-    public ResponseEntity<Object> getReminder(@PathVariable @ValidUUID String id){
+    @GetMapping("{reminderId}")
+    public ResponseEntity<ReminderResponse> getReminder(@PathVariable @ValidUUID String reminderId){
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(getReminderService.execute(id));
+        return ResponseEntity.status(HttpStatus.CREATED).body(getReminderService.execute(reminderId));
     }
 
-    @PatchMapping("/v1/reminder/{id}")
-    public ResponseEntity<Object> updateReminder(@PathVariable String id){
+    @PatchMapping("{reminderId}")
+    public ResponseEntity<ReminderResponse> updateReminder(@PathVariable @ValidUUID String reminderId, @RequestBody ReminderRequest reminderRequest){
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateReminderService.execute(reminderId, reminderRequest));
     }
 
-    @DeleteMapping("/v1/reminder/{id}")
-    public ResponseEntity<Object> deleteReminder(@PathVariable String id){
+    @DeleteMapping("{reminderId}")
+    public ResponseEntity<ReminderResponse> deleteReminder(@PathVariable String reminderId){
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
