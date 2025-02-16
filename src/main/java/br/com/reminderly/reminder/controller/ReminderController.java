@@ -4,10 +4,7 @@ import br.com.reminderly.reminder.annotation.ValidUUID;
 import br.com.reminderly.reminder.dto.ReminderListResponse;
 import br.com.reminderly.reminder.dto.ReminderRequest;
 import br.com.reminderly.reminder.dto.ReminderResponse;
-import br.com.reminderly.reminder.service.CreateReminderService;
-import br.com.reminderly.reminder.service.GetAllRemindersService;
-import br.com.reminderly.reminder.service.GetReminderService;
-import br.com.reminderly.reminder.service.UpdateReminderService;
+import br.com.reminderly.reminder.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +22,7 @@ public class ReminderController {
     private final GetAllRemindersService getAllRemindersService;
     private final GetReminderService getReminderService;
     private final UpdateReminderService updateReminderService;
+    private final DeleteReminderService deleteReminderService;
 
     @PostMapping()
     public ResponseEntity<ReminderResponse> createReminder(@RequestBody @Valid ReminderRequest reminderRequest){
@@ -51,8 +49,8 @@ public class ReminderController {
     }
 
     @DeleteMapping("{reminderId}")
-    public ResponseEntity<ReminderResponse> deleteReminder(@PathVariable String reminderId){
+    public ResponseEntity<ReminderResponse> deleteReminder(@PathVariable @ValidUUID String reminderId){
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(deleteReminderService.execute(reminderId));
     }
 }
