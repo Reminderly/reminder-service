@@ -15,20 +15,23 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class GetReminderService {
+public class DeleteReminderService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GetReminderService.class);
-    private static final String SERVICE_ACTION_LOG = "Get Reminder";
+    private static final Logger logger = LoggerFactory.getLogger(DeleteReminderService.class);
+    private static final String SERVICE_ACTION_LOG = "Delete Reminder";
 
     private final ReminderRepository reminderRepository;
 
     public ReminderResponse execute(String reminderId) {
-        try{
+        try {
             logger.info(LogMessage.SERVICE_PROCESS_START.getMessage(SERVICE_ACTION_LOG));
 
             logger.debug(LogMessage.RETRIEVING_REMINDER_FROM_DATABASE.getMessage());
             ReminderEntity reminderEntity = reminderRepository.findById(UUID.fromString(reminderId)).
                     orElseThrow(() -> new ReminderNotFoundException(LogMessage.REMINDER_NOT_FOUND_BY_ID.getMessage(reminderId)));
+
+            logger.debug(LogMessage.DELETING_REMINDER_FROM_DATABASE.getMessage());
+            reminderRepository.deleteById(reminderEntity.getId());
 
             logger.info(LogMessage.SERVICE_PROCESS_FINISH.getMessage(SERVICE_ACTION_LOG));
 
@@ -37,7 +40,7 @@ public class GetReminderService {
             logger.error(LogMessage.ERROR_PROCESSING_SERVICE_ACTION.getMessage(SERVICE_ACTION_LOG));
             throw e;
         }
-
     }
+
 
 }
