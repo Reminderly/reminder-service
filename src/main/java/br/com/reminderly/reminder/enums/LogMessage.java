@@ -11,7 +11,8 @@ public enum LogMessage {
     DELETING_REMINDER_FROM_DATABASE("Deleting reminder from database."),
     REMINDER_NOT_FOUND_BY_ID("Reminder not found for id: {0}"),
     UPDATING_REMINDER_ENTITY("Updating reminder entity."),
-    ERROR_PROCESSING_SERVICE_ACTION("Error processing service action: {0}");
+    ERROR_PROCESSING_SERVICE_ACTION("Error processing service action: {0}"),
+    PUBLISHING_MESSAGE_IN_QUEUE("Publishing message in queue.");
 
     private final String message;
 

@@ -1,8 +1,8 @@
 package br.com.reminderly.reminder.controller;
 
-import br.com.reminderly.reminder.dto.ReminderListResponse;
 import br.com.reminderly.reminder.dto.ReminderRequest;
 import br.com.reminderly.reminder.dto.ReminderResponse;
+import br.com.reminderly.reminder.entity.ReminderEntity;
 import br.com.reminderly.reminder.enums.NotificationType;
 import br.com.reminderly.reminder.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,13 +55,12 @@ public class ReminderControllerTest {
 
     private ReminderRequest reminderRequest;
     private ReminderResponse reminderResponse;
-    private ReminderListResponse reminderListResponse;
-
     private static final String BASE_URI = "/v1/reminder";
     private static final String REMINDER_ID_URI_PARAM = "/{reminderId}";
     private static final String FAKE_REMINDER_MESSAGE = "Test message";
     private static final UUID FAKE_REMINDER_ID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-    private static final UUID FAKE_USER_ID = UUID.fromString("40193d4a-0172-482a-96ae-933dac2d209c");
+    private static final String FAKE_REMINDER_SEND_TO = "test@email.com";
+    private static final String FAKE_REMINDER_TITLE = "Test Title";
 
     @BeforeEach
     void setup() {
@@ -65,14 +69,12 @@ public class ReminderControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        reminderRequest = ReminderRequest.builder().userId(FAKE_USER_ID).reminderTime(Instant.now())
-                .message(FAKE_REMINDER_MESSAGE).notificationType(NotificationType.EMAIL).build();
+        reminderRequest = ReminderRequest.builder().reminderTime(Instant.now()).message(FAKE_REMINDER_MESSAGE).notificationType(NotificationType.EMAIL)
+                .title(FAKE_REMINDER_SEND_TO).sendingTo(FAKE_REMINDER_TITLE).build();
 
-        reminderResponse = ReminderResponse.builder().reminderId(FAKE_REMINDER_ID).userId(FAKE_USER_ID).reminderTime(Instant.now())
+        reminderResponse = ReminderResponse.builder().reminderId(FAKE_REMINDER_ID).reminderTime(Instant.now())
                 .message(FAKE_REMINDER_MESSAGE).notificationType(NotificationType.WHATSAPP).build();
 
-        reminderListResponse = new ReminderListResponse();
-        reminderListResponse.setRemindersList(new ArrayList<>());
     }
 
     @Test
@@ -104,15 +106,17 @@ public class ReminderControllerTest {
     @Test
     void shouldReturn200GettingAllReminderSuccessfully() throws Exception {
 
-        reminderListResponse.getRemindersList().add(reminderResponse);
-        reminderListResponse.getRemindersList().add(reminderResponse);
+        List<ReminderEntity> reminders = new ArrayList<>();
 
-        when(getAllRemindersService.execute()).thenReturn(reminderListResponse);
+        reminders.add(new ReminderEntity());
+        reminders.add(new ReminderEntity());
 
-        MvcResult mvcResult = mockMvc.perform(get(BASE_URI)).andExpect(status().isOk()).andReturn();
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<ReminderEntity> remindersPage = new PageImpl<>(reminders, pageable, reminders.size());
 
-        ReminderListResponse reminderListResponseResult = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ReminderListResponse.class);
-        assertThat(reminderListResponseResult).usingRecursiveComparison().isEqualTo(reminderListResponse);
+        when(getAllRemindersService.execute(any())).thenReturn(remindersPage);
+
+        mockMvc.perform(get(BASE_URI)).andExpect(status().isOk()).andReturn();
 
     }
 

@@ -20,14 +20,16 @@ public class ReminderEntity {
     @Id
     private UUID id;
     @Column(nullable = false)
-    private UUID userId;
-    @Column(nullable = false)
     private String message;
+    @Column(nullable = false)
+    private String title;
     @Column(nullable = false)
     private Instant reminderTime;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private NotificationType notificationType;
+    @Column(nullable = false)
+    private String sendingTo;
     @CreationTimestamp
     @Column(updatable = false)
     private Instant createdAt;

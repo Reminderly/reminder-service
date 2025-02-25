@@ -1,12 +1,15 @@
 package br.com.reminderly.reminder.controller;
 
 import br.com.reminderly.reminder.annotation.ValidUUID;
-import br.com.reminderly.reminder.dto.ReminderListResponse;
 import br.com.reminderly.reminder.dto.ReminderRequest;
 import br.com.reminderly.reminder.dto.ReminderResponse;
+import br.com.reminderly.reminder.entity.ReminderEntity;
 import br.com.reminderly.reminder.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,9 +34,10 @@ public class ReminderController {
     }
 
     @GetMapping()
-    public ResponseEntity<ReminderListResponse> getReminders(){
-
-        return ResponseEntity.status(HttpStatus.OK).body(getAllRemindersService.execute());
+    public ResponseEntity<Page<ReminderEntity>> getReminders(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(getAllRemindersService.execute(pageable));
     }
 
     @GetMapping("{reminderId}")
