@@ -4,6 +4,7 @@ import br.com.reminderly.reminder.dto.ReminderRequest;
 import br.com.reminderly.reminder.dto.ReminderResponse;
 import br.com.reminderly.reminder.entity.ReminderEntity;
 import br.com.reminderly.reminder.enums.LogMessage;
+import br.com.reminderly.reminder.producer.ReminderProducer;
 import br.com.reminderly.reminder.repository.ReminderRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ public class CreateReminderService {
     private static final String SERVICE_ACTION_LOG = "Create Reminder";
 
     private final ReminderRepository reminderRepository;
+    private final ReminderProducer reminderProducer;
 
     public ReminderResponse execute(ReminderRequest reminderRequest) {
         try {
@@ -29,6 +31,9 @@ public class CreateReminderService {
 
             logger.debug(LogMessage.SAVING_REMINDER_IN_DATABASE.getMessage(SERVICE_ACTION_LOG));
             ReminderEntity savedReminderEntity = reminderRepository.save(reminderEntity);
+
+            logger.debug(LogMessage.PUBLISHING_MESSAGE_IN_QUEUE.getMessage(SERVICE_ACTION_LOG));
+            reminderProducer.publishReminderMessage(savedReminderEntity);
 
             logger.info(LogMessage.SERVICE_PROCESS_FINISH.getMessage(SERVICE_ACTION_LOG));
 

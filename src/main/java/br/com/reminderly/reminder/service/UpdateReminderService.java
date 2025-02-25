@@ -53,7 +53,8 @@ public class UpdateReminderService {
 
         Optional.ofNullable(reminderRequest.getReminderTime()).ifPresent(reminderResponse::setReminderTime);
         Optional.ofNullable(reminderRequest.getMessage()).ifPresent(reminderResponse::setMessage);
-        Optional.ofNullable(reminderRequest.getUserId()).ifPresent(reminderResponse::setUserId);
+        Optional.ofNullable(reminderRequest.getTitle()).ifPresent(reminderResponse::setTitle);
+        Optional.ofNullable(reminderRequest.getSendingTo()).ifPresent(reminderResponse::setSendingTo);
         Optional.ofNullable(reminderRequest.getNotificationType()).ifPresent(reminderResponse::setNotificationType);
 
         return reminderResponse;

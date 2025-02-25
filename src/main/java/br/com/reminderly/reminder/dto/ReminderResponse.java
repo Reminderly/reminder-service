@@ -13,9 +13,10 @@ import java.util.UUID;
 @Builder
 public class ReminderResponse {
     private UUID reminderId;
-    private UUID userId;
     private Instant createdAt;
     private String message;
+    private String title;
+    private String sendingTo;
     private Instant reminderTime;
     private NotificationType notificationType;
 }
