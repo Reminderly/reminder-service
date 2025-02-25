@@ -1,6 +1,7 @@
 package br.com.reminderly.reminder.dto;
 
 import br.com.reminderly.reminder.enums.NotificationType;
+import br.com.reminderly.reminder.enums.ReminderStatus;
 import lombok.*;
 
 import java.time.Instant;
@@ -19,4 +20,5 @@ public class ReminderResponse {
     private String sendingTo;
     private Instant reminderTime;
     private NotificationType notificationType;
+    private ReminderStatus status;
 }

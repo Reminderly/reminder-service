@@ -4,6 +4,7 @@ import br.com.reminderly.reminder.dto.ReminderRequest;
 import br.com.reminderly.reminder.dto.ReminderResponse;
 import br.com.reminderly.reminder.entity.ReminderEntity;
 import br.com.reminderly.reminder.enums.LogMessage;
+import br.com.reminderly.reminder.enums.ReminderStatus;
 import br.com.reminderly.reminder.producer.ReminderProducer;
 import br.com.reminderly.reminder.repository.ReminderRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class CreateReminderService {
             logger.info(LogMessage.SERVICE_PROCESS_START.getMessage(SERVICE_ACTION_LOG));
 
             ReminderEntity reminderEntity = ReminderMapper.toEntity(reminderRequest);
+            reminderEntity.setStatus(ReminderStatus.PENDING);
 
             logger.debug(LogMessage.SAVING_REMINDER_IN_DATABASE.getMessage(SERVICE_ACTION_LOG));
             ReminderEntity savedReminderEntity = reminderRepository.save(reminderEntity);
