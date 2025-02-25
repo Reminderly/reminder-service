@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Component
@@ -20,7 +21,7 @@ public class ReminderProducer {
     public void publishReminderMessage(ReminderEntity reminderEntity) {
 
         ReminderMessage reminderMessage = new ReminderMessage(reminderEntity.getId(), reminderEntity.getMessage(),
-                reminderEntity.getTitle(), reminderEntity.getSendingTo(), reminderEntity.getNotificationType().toString());
+                reminderEntity.getTitle(), reminderEntity.getSendingTo(), reminderEntity.getNotificationType().toString(), reminderEntity.getReminderTime());
 
         rabbitTemplate.convertAndSend("", routingKey, reminderMessage);
     }
@@ -29,6 +30,6 @@ public class ReminderProducer {
 }
 
 record ReminderMessage(UUID reminderId, String message, String reminderTitle, String sendingTo,
-                       String notificationType) {
+                       String notificationType, Instant reminderTime) {
 }
 
