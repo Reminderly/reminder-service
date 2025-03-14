@@ -1,6 +1,7 @@
 package br.com.reminderly.reminder.entity;
 
 import br.com.reminderly.reminder.enums.NotificationType;
+import br.com.reminderly.reminder.enums.ReminderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,6 +29,9 @@ public class ReminderEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private NotificationType notificationType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReminderStatus status;
     @Column(nullable = false)
     private String sendingTo;
     @CreationTimestamp
