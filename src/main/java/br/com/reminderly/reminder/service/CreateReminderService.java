@@ -5,13 +5,13 @@ import br.com.reminderly.reminder.dto.ReminderResponse;
 import br.com.reminderly.reminder.entity.ReminderEntity;
 import br.com.reminderly.reminder.enums.LogMessage;
 import br.com.reminderly.reminder.enums.ReminderStatus;
-import br.com.reminderly.reminder.producer.ReminderProducer;
+import br.com.reminderly.reminder.http.client.scheduler.SchedulerClient;
+import br.com.reminderly.reminder.mapper.ReminderMapper;
 import br.com.reminderly.reminder.repository.ReminderRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import br.com.reminderly.reminder.mapper.ReminderMapper;
 
 
 @Service
@@ -22,7 +22,7 @@ public class CreateReminderService {
     private static final String SERVICE_ACTION_LOG = "Create Reminder";
 
     private final ReminderRepository reminderRepository;
-    private final ReminderProducer reminderProducer;
+    private final SchedulerClient schedulerClient;
 
     public ReminderResponse execute(ReminderRequest reminderRequest) {
         try {
@@ -31,11 +31,11 @@ public class CreateReminderService {
             ReminderEntity reminderEntity = ReminderMapper.toEntity(reminderRequest);
             reminderEntity.setStatus(ReminderStatus.PENDING);
 
-            logger.debug(LogMessage.SAVING_REMINDER_IN_DATABASE.getMessage(SERVICE_ACTION_LOG));
+            logger.debug(LogMessage.SAVING_REMINDER_IN_DATABASE.getMessage());
             ReminderEntity savedReminderEntity = reminderRepository.save(reminderEntity);
 
-            logger.debug(LogMessage.PUBLISHING_MESSAGE_IN_QUEUE.getMessage(SERVICE_ACTION_LOG));
-            reminderProducer.publishReminderMessage(savedReminderEntity);
+            logger.debug(LogMessage.REQUESTING_REMINDER_SCHEDULE.getMessage());
+            schedulerClient.scheduleReminder(savedReminderEntity);
 
             logger.info(LogMessage.SERVICE_PROCESS_FINISH.getMessage(SERVICE_ACTION_LOG));
 

@@ -12,7 +12,10 @@ public enum LogMessage {
     REMINDER_NOT_FOUND_BY_ID("Reminder not found for id: {0}"),
     UPDATING_REMINDER_ENTITY("Updating reminder entity."),
     ERROR_PROCESSING_SERVICE_ACTION("Error processing service action: {0}"),
-    PUBLISHING_MESSAGE_IN_QUEUE("Publishing message in queue.");
+    PUBLISHING_MESSAGE_IN_QUEUE("Publishing message in queue."),
+    REQUESTING_REMINDER_SCHEDULE("Requesting reminder schedule"),
+    ERROR_ON_REQUEST_CLIENT("Error on request client: {0} - Status code: {1} - Response body: {2} ");
+
 
     private final String message;
 
