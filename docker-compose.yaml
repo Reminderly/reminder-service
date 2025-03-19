@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: reminder-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: reminder_database
+      POSTGRES_USER: reminder
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "54320:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: reminder-service
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/reminder_database
+      SPRING_DATASOURCE_USERNAME: reminder
+      SPRING_DATASOURCE_PASSWORD: 123
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
