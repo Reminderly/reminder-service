@@ -31,11 +31,11 @@ public class CreateReminderService {
             ReminderEntity reminderEntity = ReminderMapper.toEntity(reminderRequest);
             reminderEntity.setStatus(ReminderStatus.PENDING);
 
+            logger.debug(LogMessage.REQUESTING_REMINDER_SCHEDULE.getMessage());
+            schedulerClient.scheduleReminder(reminderEntity);
+
             logger.debug(LogMessage.SAVING_REMINDER_IN_DATABASE.getMessage());
             ReminderEntity savedReminderEntity = reminderRepository.save(reminderEntity);
-
-            logger.debug(LogMessage.REQUESTING_REMINDER_SCHEDULE.getMessage());
-            schedulerClient.scheduleReminder(savedReminderEntity);
 
             logger.info(LogMessage.SERVICE_PROCESS_FINISH.getMessage(SERVICE_ACTION_LOG));
 
