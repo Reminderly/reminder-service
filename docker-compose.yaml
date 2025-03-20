@@ -13,6 +13,8 @@ services:
       - "54320:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - reminderly-network
 
   app:
     build: .
@@ -24,8 +26,15 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/reminder_database
       SPRING_DATASOURCE_USERNAME: reminder
       SPRING_DATASOURCE_PASSWORD: 123
+      SCHEDULER_URL: http://app:8081
     ports:
       - "8080:8080"
+    networks:
+      - reminderly-network
 
 volumes:
   pgdata:
+
+networks:
+  reminderly-network:
+    external: true
