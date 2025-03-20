@@ -8,6 +8,7 @@ import br.com.reminderly.reminder.enums.ReminderStatus;
 import br.com.reminderly.reminder.http.client.scheduler.SchedulerClient;
 import br.com.reminderly.reminder.mapper.ReminderMapper;
 import br.com.reminderly.reminder.repository.ReminderRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class CreateReminderService {
     private final ReminderRepository reminderRepository;
     private final SchedulerClient schedulerClient;
 
+    @Transactional
     public ReminderResponse execute(ReminderRequest reminderRequest) {
         try {
             logger.info(LogMessage.SERVICE_PROCESS_START.getMessage(SERVICE_ACTION_LOG));
